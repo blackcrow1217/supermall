@@ -26,6 +26,7 @@ export default {
       recommends: [],
     };
   },
+  
   components: {
     NavBar,
     Swiper,

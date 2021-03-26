@@ -48,6 +48,7 @@
     text-align: center;
     height: 49px;
     font-size: 14px;
+    /* margin-bottom: 6px; */
   }
 
   .tab-bar-item img {

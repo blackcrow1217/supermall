@@ -1,24 +1,28 @@
 <template>
-  <div id="home">
+  <div id="home" class="wrapper">
     <!-- 头部 -->
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <!-- 轮播图 -->
-    <!-- 父组件向子组件传递参数用 v-bind:（声明的对象）=（传递的参数） 来接收 -->
-    <home-swiper :banners="banners"></home-swiper>
-    <!-- 推荐信息 -->
-    <recommend-view :recommends="recommends"></recommend-view>
-    <!-- 本周流行 -->
-    <feature-view></feature-view>
-    <!-- 商品列表的选项卡 -->
-    <tab-control
-      class="tab-control"
-      :titles="['流行', '新款', '精选']"
-      @tabClick="tabClick"
-    ></tab-control>
-    <!-- 商品列表 -->
-    <goods-list :goods="showGoods"></goods-list>
+    <!-- scroll是滚动插件 -->
+    <scroll class="content" ref="scroll">
+      <!-- 轮播图 -->
+      <!-- 父组件向子组件传递参数用 v-bind:（声明的对象）=（传递的参数） 来接收 -->
+      <home-swiper :banners="banners"></home-swiper>
+      <!-- 推荐信息 -->
+      <recommend-view :recommends="recommends"></recommend-view>
+      <!-- 本周流行 -->
+      <feature-view></feature-view>
+      <!-- 商品列表的选项卡 -->
+      <tab-control
+        class="tab-control"
+        :titles="['流行', '新款', '精选']"
+        @tabClick="tabClick"
+      ></tab-control>
+      <!-- 商品列表 -->
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
+    <back-top @click.native="backClick"></back-top>
   </div>
 </template>
 
@@ -27,7 +31,8 @@
 import NavBar from "@/components/common/navbar/NavBar";
 import TabControl from "@/components/content/tabControl/TabControl";
 import GoodsList from "@/components/content/goods/GoodsList";
-
+import Scroll from "@/components/common/scroll/Scroll";
+import BackTop from "@/components/content/backtop/BackTop";
 // 子组件
 import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
@@ -59,9 +64,11 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
+    Scroll,
     HomeSwiper,
     RecommendView,
     FeatureView,
+    BackTop,
   },
   created() {
     // 1.调用多个数据方法
@@ -72,8 +79,8 @@ export default {
     this.getHomeGoods("sell");
   },
   methods: {
-    /* 
-      事件监听相关方法    
+    /*
+      事件监听相关方法
     */
     tabClick(index) {
       // 根据打印下标得到 pop = 0， new = 1， sell = 2
@@ -82,7 +89,7 @@ export default {
         case 0:
           this.currentType = "pop";
           break;
-        case 1: 
+        case 1:
           this.currentType = "new";
           break;
         case 2:
@@ -90,8 +97,11 @@ export default {
           break;
       }
     },
+    backClick() {
+      this.$refs.scroll.scroll.scrollTo(0, 0, 500);
+    },
 
-    /* 
+    /*
       网络请求相关方法
     */
     // 1.请求多个数据
@@ -112,16 +122,18 @@ export default {
     },
   },
   computed: {
-    showGoods(){
-      return this.goods[this.currentType].list
-    }
-  }
+    showGoods() {
+      return this.goods[this.currentType].list;
+    },
+  },
 };
 </script>
 
 <style scoped>
 #home {
   padding-top: 44px;
+  height: 100vh;
+  position: relative;
 }
 .home-nav {
   /* 这个是css的变量，在assets文件夹里base.css文件中定义的 */
@@ -137,5 +149,15 @@ export default {
   /* 粘性定位，导航栏固定在某个位置 */
   position: sticky;
   top: 44px;
+  z-index: 9;
+}
+.content {
+  /* height: 300px; */
+  overflow: hidden;
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
 }
 </style>

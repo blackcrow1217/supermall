@@ -1,7 +1,8 @@
 // 商品列表小组件
 <template>
-  <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="" />
+  <div class="goods-item" @click="itemClick">
+    <!-- @load 是vue中封装好的监听图片加载事件-->
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
     <div class="goods-info">
       <!-- 商品描述 -->
       <p>{{ goodsItem.title }}</p>
@@ -23,6 +24,16 @@ export default {
       },
     },
   },
+  methods: {
+    // 监听item图片加载
+    imageLoad() {
+      this.$bus.$emit("itemImageLoad");
+    },
+    // 跳转到详情页
+    itemClick() {
+      this.$router.push('/Detail/' + this.goodsItem.iid)
+    },
+  },
 };
 </script>
 
@@ -31,12 +42,12 @@ export default {
   padding-bottom: 40px;
   position: relative;
   width: 48%;
-} 
-.goods-item img{
+}
+.goods-item img {
   width: 100%;
   border-radius: 5px;
 }
-.goods-info{
+.goods-info {
   font-size: 12px;
   position: absolute;
   bottom: 5px;
@@ -46,7 +57,7 @@ export default {
   overflow: hidden;
   text-align: center;
 }
-.goods-info p{
+.goods-info p {
   overflow: hidden;
   /* 超出部分显示省略号 */
   text-overflow: ellipsis;
@@ -54,20 +65,20 @@ export default {
   white-space: nowrap;
   margin-bottom: 3px;
 }
-.goods-info .price{
-  color: var(--color-hight-text);
+.goods-info .price {
+  color: #ff5777;
   margin-right: 20px;
 }
-.goods-info .collect{
+.goods-info .collect {
   position: relative;
 }
-.goods-info .collect::before{
+.goods-info .collect::before {
   content: "";
   position: absolute;
   left: -15px;
   top: -1px;
   width: 14px;
   height: 14px;
-  background:url("../../../assets/img/common/collect.svg") 0 0/14px 14px;
+  background: url("../../../assets/img/common/collect.svg") 0 0/14px 14px;
 }
 </style>
